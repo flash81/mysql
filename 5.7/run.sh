@@ -6,7 +6,7 @@ set -e
 CONF_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 
 # Set permission of config file
-chmod 644 ${CONF_FILE}
+#chmod 644 ${CONF_FILE}
 
 
 # Main
