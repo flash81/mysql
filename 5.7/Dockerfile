@@ -57,15 +57,16 @@ RUN { \
 RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf \
 	&& echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
 
-VOLUME  ["/etc/mysql", "/var/lib/mysql"]
+
+VOLUME /var/lib/mysql
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
 COPY run.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/run.sh
 RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
-RUN ln -s /usr/local/bin/run.sh /docker-entrypoint-initdb.d/run.sh # backwards compat
-ENTRYPOINT ["docker-entrypoint.sh"]
+RUN ln -s /usr/local/bin/run.sh /run.sh # backwards compat
+ENTRYPOINT ["docker-entrypoint.sh","run.sh"]
 
 EXPOSE 3306
 CMD ["mysqld"]
