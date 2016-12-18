@@ -57,7 +57,7 @@ RUN { \
 RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf \
 	&& echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
 
-VOLUME /var/lib/mysql
+VOLUME  ["/etc/mysql", "/var/lib/mysql"]
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
