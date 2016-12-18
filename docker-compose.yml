@@ -1,0 +1,34 @@
+# database
+master:
+  build: ./5.7
+  ports:
+    - "3317:3306"
+  volumes_from:
+    - data-master
+  environment:
+    - MYSQL_DATABASE=dding
+    - REPLICATION_MASTER=true
+    - MYSQL_ROOT_PASSWORD=123456
+  restart: always
+slave:
+  build: ./5.7
+  ports:
+    - "3318:3306"
+  volumes_from:
+    - data-slave
+  links:
+    - master:mysql
+  environment:
+    - REPLICATION_SLAVE=true
+    - MYSQL_ROOT_PASSWORD=123456
+  restart: always
+data-master:
+  image: tutum/ubuntu:latest
+  volumes:
+     - /var/lib/mysql
+  restart: always
+data-slave:
+  image: tutum/ubuntu:latest
+  volumes:
+     - /var/lib/mysql
+  restart: always
