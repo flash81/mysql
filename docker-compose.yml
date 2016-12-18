@@ -10,6 +10,7 @@ master:
     - REPLICATION_MASTER=true
     - MYSQL_ROOT_PASSWORD=123456
   restart: always
+  privileged: true
 slave:
   image: registry.cn-hangzhou.aliyuncs.com/flash20/mysql:5.7
   ports:
@@ -22,6 +23,7 @@ slave:
     - REPLICATION_SLAVE=true
     - MYSQL_ROOT_PASSWORD=123456
   restart: always
+  privileged: true
 data-master:
   image: tutum/ubuntu:latest
   volumes:
