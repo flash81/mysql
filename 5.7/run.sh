@@ -1,53 +1,14 @@
 #!/bin/bash
 
-set -m
-set -e
-
-CONF_FILE="/etc/mysql/conf.d/docker.cnf"
-
 # Set permission of config file
-chmod 644 ${CONF_FILE}
-
+#chmod 644 ${CONF_FILE}
 # Main
-if [ ${REPLICATION_MASTER} == "**False**" ]; then
+if [ "${REPLICATION_MASTER}" == "**False**" ]; then
     unset REPLICATION_MASTER
 fi
 
-if [ ${REPLICATION_SLAVE} == "**False**" ]; then
+if [ "${REPLICATION_SLAVE}" == "**False**" ]; then
     unset REPLICATION_SLAVE
-fi
-
-# Set MySQL REPLICATION - MASTER
-if [ -n "${REPLICATION_MASTER}" ]; then
-    echo "=> Configuring MySQL replication as master (1/2) ..."
-    if [ ! -f /replication_set.1 ]; then
-        RAND="$(date +%s | rev | cut -c 1-2)$(echo ${RANDOM})"
-        echo "=> Writting configuration file '${CONF_FILE}' with server-id=${RAND}"
-        sed -i "s/^#server-id.*/server-id = ${RAND}/" ${CONF_FILE}
-        sed -i "s/^#log-bin.*/log-bin = mysql-bin/" ${CONF_FILE}
-        touch /replication_set.1
-    else
-        echo "=> MySQL replication master already configured, skip"
-    fi
-fi
-
-# Set MySQL REPLICATION - SLAVE
-if [ -n "${REPLICATION_SLAVE}" ]; then
-    echo "=> Configuring MySQL replication as slave (1/2) ..."
-    if [ -n "${MYSQL_PORT_3306_TCP_ADDR}" ] && [ -n "${MYSQL_PORT_3306_TCP_PORT}" ]; then
-        if [ ! -f /replication_set.1 ]; then
-            RAND="$(date +%s | rev | cut -c 1-2)$(echo ${RANDOM})"
-            echo "=> Writting configuration file '${CONF_FILE}' with server-id=${RAND}"
-            sed -i "s/^#server-id.*/server-id = ${RAND}/" ${CONF_FILE}
-            sed -i "s/^#log-bin.*/log-bin = mysql-bin/" ${CONF_FILE}
-            touch /replication_set.1
-        else
-            echo "=> MySQL replication slave already configured, skip"
-        fi
-    else
-        echo "=> Cannot configure slave, please link it to another MySQL container with alias as 'mysql'"
-        exit 1
-    fi
 fi
 
 # Set MySQL REPLICATION - MASTER
@@ -83,5 +44,3 @@ if [ -n "${REPLICATION_SLAVE}" ]; then
         exit 1
     fi
 fi
-
-fg

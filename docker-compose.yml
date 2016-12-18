@@ -3,18 +3,22 @@ master:
   image: registry.cn-hangzhou.aliyuncs.com/flash20/mysql:5.7
   ports:
     - "3317:3306"
+  volumes:
+    - ./5.7/run.sh:/docker-entrypoint-initdb.d/run.sh
   volumes_from:
     - data-master
   environment:
-    - MYSQL_DATABASE=dding
     - REPLICATION_MASTER=true
     - MYSQL_ROOT_PASSWORD=123456
+    - SERVER_ID=1
   restart: always
   #privileged: true
 slave:
   image: registry.cn-hangzhou.aliyuncs.com/flash20/mysql:5.7
   ports:
     - "3318:3306"
+  volumes:
+    - ./5.7/run.sh:/docker-entrypoint-initdb.d/run.sh
   volumes_from:
     - data-slave
   links:
@@ -22,6 +26,7 @@ slave:
   environment:
     - REPLICATION_SLAVE=true
     - MYSQL_ROOT_PASSWORD=123456
+    - SERVER_ID=2
   restart: always
   #privileged: true
 data-master:

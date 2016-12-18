@@ -33,6 +33,7 @@ ENV MYSQL_MAJOR 5.7
 ENV MYSQL_VERSION 5.7.17-1debian8
 ENV REPLICATION_MASTER=**False** \
     REPLICATION_SLAVE=**False** \
+    SERVER_ID=1 \
     REPLICATION_USER=replica \
     REPLICATION_PASS=replica
 
@@ -55,9 +56,9 @@ RUN { \
 # comment out a few problematic configuration values
 # don't reverse lookup hostnames, they are usually another container
 RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf \
-	&& echo '[mysqld]\nskip-host-cache\nskip-name-resolve\n#server-id\n#log-bin' > /etc/mysql/conf.d/docker.cnf
+	&& echo '[mysqld]\nskip-host-cache\nskip-name-resolve\n#server-id = $SERVER_ID\n#log-bin = mysql-bin' > /etc/mysql/conf.d/docker.cnf
 
-#RUN chmod 755 /etc/mysql/conf.d/docker.cnf
+#RUN chmod 755 /etc/mysql/conf.d/master.cnf
 VOLUME /var/lib/mysql
 
 COPY docker-entrypoint.sh /usr/local/bin/
