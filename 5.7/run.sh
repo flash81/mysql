@@ -6,7 +6,7 @@ set -e
 CONF_FILE="/etc/mysql/conf.d/docker.cnf"
 
 # Set permission of config file
-#chmod 644 ${CONF_FILE}
+chmod 644 ${CONF_FILE}
 
 
 # Main
@@ -24,8 +24,8 @@ if [ -n "${REPLICATION_MASTER}" ]; then
     if [ ! -f /replication_set.1 ]; then
         RAND="$(date +%s | rev | cut -c 1-2)$(echo ${RANDOM})"
         echo "=> Writting configuration file '${CONF_FILE}' with server-id=${RAND}"
-        echo "log-bin=mysql-bin" >> ${CONF_FILE}
-        echo "server-id=${RAND}" >> ${CONF_FILE}
+        sed -i "s/^#server-id.*/server-id = ${RAND}/" ${CONF_FILE}
+        sed -i "s/^#log-bin.*/log-bin = mysql-bin/" ${CONF_FILE}
         touch /replication_set.1
     else
         echo "=> MySQL replication master already configured, skip"
@@ -39,8 +39,8 @@ if [ -n "${REPLICATION_SLAVE}" ]; then
         if [ ! -f /replication_set.1 ]; then
             RAND="$(date +%s | rev | cut -c 1-2)$(echo ${RANDOM})"
             echo "=> Writting configuration file '${CONF_FILE}' with server-id=${RAND}"
-            echo "log-bin=mysql-bin" >> ${CONF_FILE}
-            echo "server-id=${RAND}" >> ${CONF_FILE}
+            sed -i "s/^#server-id.*/server-id = ${RAND}/" ${CONF_FILE}
+            sed -i "s/^#log-bin.*/log-bin = mysql-bin/" ${CONF_FILE}
             touch /replication_set.1
         else
             echo "=> MySQL replication slave already configured, skip"
