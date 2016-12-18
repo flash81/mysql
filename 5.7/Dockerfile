@@ -56,7 +56,7 @@ RUN { \
 # comment out a few problematic configuration values
 # don't reverse lookup hostnames, they are usually another container
 RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf \
-	&& echo "[mysqld]\nskip-host-cache\nskip-name-resolve\nserver-id = $SERVER_ID\nlog-bin = mysql-bin" > /etc/mysql/conf.d/docker.cnf
+	&& echo "[mysqld]\nskip-host-cache\nskip-name-resolve\nserver-id = $(date +%s | rev | cut -c 1-2)$(echo ${RANDOM})\nlog-bin = mysql-bin" > /etc/mysql/conf.d/docker.cnf
 
 #RUN chmod 755 /etc/mysql/conf.d/master.cnf
 VOLUME /var/lib/mysql

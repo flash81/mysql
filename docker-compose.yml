@@ -10,7 +10,6 @@ master:
   environment:
     - REPLICATION_MASTER=true
     - MYSQL_ROOT_PASSWORD=123456
-    - SERVER_ID=1
   restart: always
   #privileged: true
 slave:
@@ -26,7 +25,6 @@ slave:
   environment:
     - REPLICATION_SLAVE=true
     - MYSQL_ROOT_PASSWORD=123456
-    - SERVER_ID=2
   restart: always
   #privileged: true
 data-master:
