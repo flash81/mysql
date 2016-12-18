@@ -4,11 +4,12 @@ set -m
 set -e
 
 CONF_FILE="/etc/mysql/conf.d/docker.cnf"
+LOG="/var/log/mysql/error.log"
 
 # Set permission of config file
 chmod 644 ${CONF_FILE}
 
-exec mysqld
+tail -F $LOG &
 # Main
 if [ ${REPLICATION_MASTER} == "**False**" ]; then
     unset REPLICATION_MASTER
